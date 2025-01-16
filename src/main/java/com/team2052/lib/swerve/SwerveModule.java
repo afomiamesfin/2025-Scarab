@@ -138,7 +138,7 @@ public class SwerveModule {
             .velocityConversionFactor(SwerveConstants.SwerveModule.steerPositionConversionFactor / 60.0);
     steerEncoder.setPosition(canCoder.getAbsolutePosition().getValueAsDouble() * (2 * Math.PI));
    
-    steerMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    steerMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     steerMotorConfig.closedLoop
         .pid(
@@ -148,11 +148,6 @@ public class SwerveModule {
         .positionWrappingMinInput(-Math.PI)
         .positionWrappingMaxInput(Math.PI)
         .positionWrappingEnabled(true);
-    
-    steerMotor.configure(
-        steerMotorConfig, 
-        ResetMode.kResetSafeParameters, 
-        PersistMode.kNoPersistParameters);
 
     try{
         steerMotor.configure(
@@ -177,8 +172,7 @@ public class SwerveModule {
         );
     }
 
-    public void setState(double velocityMetersPerSecond, Rotation2d steerAngle) {
-        // System.out.println("REQUESTED STEER ANGLE: " + steerAngle);
+    public void setState(double velocityMetersPerSecond, Rotation2d steerAngle) { // in drive method
         SwerveModuleState desiredState = new SwerveModuleState(velocityMetersPerSecond, steerAngle);
         // Reduce radians to 0 to 2pi range and simplify to nearest angle
         desiredState.optimize(getState().angle);

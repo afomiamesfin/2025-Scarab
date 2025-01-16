@@ -103,7 +103,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // print encoder position
-        System.out.println("FRONT LEFT ENCODER POS: " + frontLeftModule.getState().angle.getDegrees());
+        // System.out.println("FRONT LEFT ENCODER POS: " + frontLeftModule.getState().angle.getDegrees());
 
         robotState.setDrivetrainState(
                 new DrivetrainState(getRobotRelativeChassisSpeeds(), getModulePositions(), navx.getRotation2d()));
@@ -140,6 +140,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
+        
+        SmartDashboard.putNumber("DRIVE ROTATION SPEED REQUEST: ", chassisSpeeds.omegaRadiansPerSecond);
         SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
                 chassisSpeeds,
                 DrivetrainConstants.DRIVETRAIN_TO_ROBOT_CENTER_METERS);
@@ -167,6 +169,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 || swerveModuleStates[1].speedMetersPerSecond != 0
                 || swerveModuleStates[2].speedMetersPerSecond != 0
                 || swerveModuleStates[3].speedMetersPerSecond != 0;
+
+        for(SwerveModuleState s: swerveModuleStates){
+            System.out.println("REQUESTED SWERVE MODULE ROTATION2D ANGLE ");
+        }
 
         frontLeftModule.setState(
                 swerveModuleStates[0].speedMetersPerSecond,
