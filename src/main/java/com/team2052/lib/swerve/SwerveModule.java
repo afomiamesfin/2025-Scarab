@@ -76,10 +76,9 @@ public class SwerveModule {
     driveMotor = new TalonFX(moduleConstants.driveMotorID);
     driveMotorConfig = new TalonFXConfiguration();
     driveMotor.setNeutralMode(NeutralModeValue.Brake);
-    // TODO: which one is positive?
-    // driveMotorInvertedValue = InvertedValue.Clockwise_Positive; // clock wise 
-    // // driveMotor.setInverted(SwerveConstants.SwerveModule.DRIVE_INVERTED);
-    // driveMotorConfig.MotorOutput.invert = true;
+    // TODO: clockwise vs counterclockwise positive - which is inverted
+    // driveMotor.setInverted(SwerveConstants.SwerveModule.DRIVE_INVERTED); // old version
+    driveMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // which one?
 
     VoltageConfigs driveVoltageConfig = new VoltageConfigs();
     driveVoltageConfig.withPeakForwardVoltage(SwerveConstants.MAX_VOLTAGE_VOLTS);

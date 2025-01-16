@@ -12,7 +12,6 @@ import com.team2052.lib.states.DrivetrainState;
 import com.team2052.lib.swerve.SwerveModule;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
