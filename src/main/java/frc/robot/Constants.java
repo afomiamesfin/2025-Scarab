@@ -48,7 +48,7 @@ public final class Constants {
       */
 
     public static final class FrontLeftModule {
-        public static final double STEER_OFFSET_RADIANS = 0;// -Math.toRadians(155.8);
+        public static final double STEER_OFFSET_RADIANS = -Math.toRadians(155.8);
 
         public static SwerveModuleConstants SwerveModuleConstants() {
             return new SwerveModuleConstants(
@@ -59,7 +59,7 @@ public final class Constants {
     }
 
     public static final class FrontRightModule {
-        public static final double STEER_OFFSET_RADIANS = 0;//-Math.toRadians(188.9);
+        public static final double STEER_OFFSET_RADIANS = -Math.toRadians(188.9);
 
         public static SwerveModuleConstants SwerveModuleConstants() {
             return new SwerveModuleConstants(
@@ -70,7 +70,7 @@ public final class Constants {
     }
 
     public static final class BackLeftModule {
-        public static final double STEER_OFFSET_RADIANS = 0;//-Math.toRadians(3.5);
+        public static final double STEER_OFFSET_RADIANS = -Math.toRadians(3.5);
 
         public static SwerveModuleConstants SwerveModuleConstants() {
             return new SwerveModuleConstants(
@@ -81,7 +81,7 @@ public final class Constants {
     }
 
     public static final class BackRightModule {
-        public static final double STEER_OFFSET_RADIANS = 0;//-Math.toRadians(340);
+        public static final double STEER_OFFSET_RADIANS = -Math.toRadians(340);
 
         public static SwerveModuleConstants SwerveModuleConstants() {
             return new SwerveModuleConstants(

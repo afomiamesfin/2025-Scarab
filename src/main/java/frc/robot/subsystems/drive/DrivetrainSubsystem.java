@@ -123,7 +123,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         if (getFieldCentric()) {
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 chassisSpeeds.vxMetersPerSecond * invert, 
                 chassisSpeeds.vyMetersPerSecond * invert, 
                 chassisSpeeds.omegaRadiansPerSecond, 
@@ -139,7 +139,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
-        
         SmartDashboard.putNumber("DRIVE ROTATION SPEED REQUEST: ", chassisSpeeds.omegaRadiansPerSecond);
         SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
                 chassisSpeeds,
@@ -168,10 +167,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 || swerveModuleStates[1].speedMetersPerSecond != 0
                 || swerveModuleStates[2].speedMetersPerSecond != 0
                 || swerveModuleStates[3].speedMetersPerSecond != 0;
-
-        for(SwerveModuleState s: swerveModuleStates){
-            System.out.println("REQUESTED SWERVE MODULE ROTATION2D ANGLE ");
-        }
 
         frontLeftModule.setState(
                 swerveModuleStates[0].speedMetersPerSecond,
@@ -269,7 +264,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     private double getJoystickRotation() {
-        return slewAxis(rotationLimiter, deadBand(-rotationSupplier.getAsDouble()));
+        return slewAxis(rotationLimiter, deadBand(rotationSupplier.getAsDouble()));
     }
 
     private boolean getFieldCentric() {

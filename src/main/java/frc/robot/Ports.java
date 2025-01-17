@@ -15,7 +15,7 @@ public class Ports {
     public static final int FR_ENCODER = 2;
 
     public static final int BL_DRIVE = 9;
-    public static final int BL_STEER = 13; // recovered (used to be 7)
+    public static final int BL_STEER = 7; // recovered 7, had been 13
     public static final int BL_ENCODER = 8;
 
     public static final int BR_DRIVE = 6;

@@ -45,7 +45,7 @@ public class RobotContainer {
         driveJoystick::getX,
         // Rotation velocity supplier.
         turnJoystick::getX,
-        Dashboard.getInstance()::isFieldCentric);
+        () -> true);// Dashboard.getInstance()::isFieldCentric);
 
     // vision = new VisionSubsystem();
     // advantageScope = new AdvantageScopeSubsystem(drivetrain);

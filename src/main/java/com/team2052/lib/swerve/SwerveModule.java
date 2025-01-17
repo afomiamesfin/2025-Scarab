@@ -76,9 +76,13 @@ public class SwerveModule {
     driveMotor = new TalonFX(moduleConstants.driveMotorID);
     driveMotorConfig = new TalonFXConfiguration();
     driveMotor.setNeutralMode(NeutralModeValue.Brake);
-    // TODO: clockwise vs counterclockwise positive - which is inverted
+    // inverted is clockwise positive, inverted false counterclockwise positive
     // driveMotor.setInverted(SwerveConstants.SwerveModule.DRIVE_INVERTED); // old version
-    driveMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // which one?
+    if(SwerveConstants.SwerveModule.DRIVE_INVERTED){
+        driveMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    } else {
+        driveMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    }
 
     VoltageConfigs driveVoltageConfig = new VoltageConfigs();
     driveVoltageConfig.withPeakForwardVoltage(SwerveConstants.MAX_VOLTAGE_VOLTS);
@@ -109,17 +113,15 @@ public class SwerveModule {
     /*
      * Steer Motor Initialization
     */
-
     steerMotor = new SparkMax(moduleConstants.steerMotorID, MotorType.kBrushless);
     steerMotorConfig = new SparkMaxConfig();
 
     // don't need to restore defaults anymore
     // checkError("Failed to restore drive motor factory defaults", steerMotor.restoreFactoryDefaults());
 
-    // don't need
     // checkError(
     //     "Failed to set drive motor periodic status frame rate",
-    //     steerMotorConfig.signals.primaryEncoderPositionPeriodMs(100) // TODO: default kStatus 2??
+        steerMotorConfig.signals.primaryEncoderPositionPeriodMs(20); // TODO: default kStatus 2??
     //     // steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100),
     //     // steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20),
     //     // steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20)
