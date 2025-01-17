@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
@@ -39,6 +40,7 @@ public class RobotContainer {
     turnJoystick = new Joystick(1);
     controlPanel = new Joystick(2);
 
+    // not running drive in periodic, arguments don't matter
     drivetrain = new DrivetrainSubsystem(
         driveJoystick::getY,
         // Sideways velocity supplier.
@@ -46,6 +48,20 @@ public class RobotContainer {
         // Rotation velocity supplier.
         turnJoystick::getX,
         () -> true);// Dashboard.getInstance()::isFieldCentric);
+
+    drivetrain.setDefaultCommand(
+      new DriveCommand(
+        // Forward velocity supplier.
+        driveJoystick::getY,
+        // Sideways velocity supplier.
+        driveJoystick::getX,
+        // Rotation velocity supplier.
+        turnJoystick::getX,
+        () -> true, // Dashboard.getInstance()::isFieldCentric,
+        //Dashboard.getInstance()::isFieldCentric,
+        drivetrain
+      )
+    );
 
     // vision = new VisionSubsystem();
     // advantageScope = new AdvantageScopeSubsystem(drivetrain);

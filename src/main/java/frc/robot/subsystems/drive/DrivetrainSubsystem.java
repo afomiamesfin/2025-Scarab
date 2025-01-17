@@ -7,7 +7,9 @@ package frc.robot.subsystems.drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.google.flatbuffers.Constants;
 import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 import com.team2052.lib.states.DrivetrainState;
 import com.team2052.lib.swerve.SwerveModule;
 
@@ -54,6 +56,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private double lastAccelY = 0;
 
     private final AHRS navx;
+
+    // old driving
+    ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
 
     // TODO: Drivetrain singleton??
 
@@ -133,17 +138,75 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         driveController.requestDriveAndTurn(DrivetrainConstants.DRIVER_PRIORITY, chassisSpeeds);
 
-        drive(driveController.getRequestedSpeeds());
+        // drive(driveController.getRequestedSpeeds());
 
         SmartDashboard.putBoolean("CollisionDetected", getCollisionDetected());
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
-        SmartDashboard.putNumber("DRIVE ROTATION SPEED REQUEST: ", chassisSpeeds.omegaRadiansPerSecond);
+        // System.out.println("===== RUNNING WRONG DRIVE");
         SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
                 chassisSpeeds,
                 DrivetrainConstants.DRIVETRAIN_TO_ROBOT_CENTER_METERS);
         setModuleStates(swerveModuleStates);
+    }
+
+    // OLD DRIVE CHASSIS SPEEDS
+    public void defaultDriveChassisSpeeds(ChassisSpeeds chassisSpeeds){
+        // System.out.println("======= OLD DRIVE COMMAND");
+        currentChassisSpeeds = chassisSpeeds;
+        SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+        setModuleStates(swerveModuleStates);
+    }
+
+    // OLD DRIVE METHOD
+    public void driveNCS(
+        double normalizedXVelocity, 
+        double normalizedYVelocity, 
+        double normalizedRotationVelocity, 
+        boolean fieldCentric
+    ) {
+        normalizedXVelocity = Math.copySign(
+            Math.min(Math.abs(normalizedXVelocity), 1.0),
+            normalizedXVelocity
+        );
+        normalizedYVelocity = Math.copySign(
+            Math.min(Math.abs(normalizedYVelocity), 1.0),
+            normalizedYVelocity
+        );
+        normalizedRotationVelocity = Math.copySign(
+            Math.min(Math.abs(normalizedRotationVelocity), 1.0),
+            normalizedRotationVelocity
+        );
+
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
+            normalizedXVelocity * getMaxVelocityMetersPerSecond(), 
+            normalizedYVelocity * getMaxVelocityMetersPerSecond(), 
+            normalizedRotationVelocity * getMaxAngularVelocityRadiansPerSecond()
+        );
+
+        // The origin is always blue. When our alliance is red, X and Y need to be inverted
+        var alliance = DriverStation.getAlliance();
+        var invert = 1;
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            invert = -1;
+        }
+
+        // if (fieldCentric) {
+            chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+                chassisSpeeds.vxMetersPerSecond * invert, 
+                chassisSpeeds.vyMetersPerSecond * invert, 
+                chassisSpeeds.omegaRadiansPerSecond, 
+                Rotation2d.fromDegrees(-navx.getRotation2d().getDegrees())
+            );
+        System.out.println(navx.getRotation2d().getDegrees());
+        // }
+
+        defaultDriveChassisSpeeds(chassisSpeeds);
+    }
+
+    public void stop() {
+        driveNCS(0, 0, 0, false);
     }
 
     public AHRS getNavx() {
@@ -151,8 +214,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void zeroHeading() { // TODO: can't zero the heading
-        // System.out.println("zeroing odometry");
-
+        navx.reset();
         // if (RobotState.getInstance().isRedAlliance()) {
         //     resetPose(new Pose2d(robotState.getRobotPose().getTranslation(), new Rotation2d(Math.toRadians(180))));
         // } else {
